@@ -47,6 +47,7 @@ pub struct Metadata {
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Encode, Decode, TypeInfo)]
+#[event]
 pub enum Event {
     Approval {
         owner: ActorId,
@@ -77,14 +78,15 @@ impl Service {
         }
         Self()
     }
+
+    pub fn new() -> Self {
+        Self()
+    }
 }
 
 #[service(events = Event)]
 impl Service {
-    pub fn new() -> Self {
-        Self()
-    }
-
+    #[export]
     pub fn approve(&mut self, spender: ActorId, value: U256) -> bool {
         let owner = msg::source();
         let storage = Storage::get_mut();
